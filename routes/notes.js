@@ -33,4 +33,53 @@ router.post('/create-note', validateNote, (req, res) => {
     res.status(201).json(notes);
 })
 
+//http://localhost:3000/notes/edit-note/3
+// {
+//     "title": "Six Note",
+//     "content": "Updated content"
+// }
+//with put we will have to pass the whole request model with all properties whatever is updated or not updated
+router.put('/edit-note/:id', (req, res) => {
+    const noteIndex = notes.findIndex(x => x.id == req.params.id);
+    if(noteIndex !== -1){
+        notes[noteIndex] = {
+            id: notes[noteIndex].id,
+            title: req.body.title,
+            content: req.body.content
+        }
+        res.status(200).json(notes);
+    } else {
+        res.status(404).json({erorr: "note not found."})
+    }
+})
+
+//http://localhost:3000/notes/update-note/4
+//{
+//      "title": "Fifth Note"
+//}
+//with patch we can update only one property of result model as well, if not the whole model change needed
+router.patch('/update-note/:id', (req, res) => {
+    const noteIndex = notes.findIndex(x => x.id == req.params.id);
+    if(noteIndex){
+        notes[noteIndex] = {
+            ...notes[noteIndex],
+            ...req.body
+        }
+        res.status(200).json(notes)
+    } else {
+        res.status(404).json({error: "note not found."})
+    }
+})
+
+//http://localhost:3000/notes/delete-note/3
+router.delete('/delete-note/:id', (req, res) => {
+    const noteIndex = notes.findIndex(x => x.id == req.params.id);
+    if(noteIndex != -1){
+        notes.splice(noteIndex, 1);
+        res.status(200).json(notes);
+    } else {
+        res.status(404).json({erorr: "note not found."})
+    }
+})
+
 module.exports = router;
